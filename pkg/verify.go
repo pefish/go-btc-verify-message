@@ -93,27 +93,24 @@ func VerifyWithChain(signedMessage SignedMessage, net *chaincfg.Params) (bool, e
 		return false, err
 	}
 
-	// Get the hash from the public key, so we can check that address matches
-	publicKeyHash := internal.GeneratePublicKeyHash(recoveryFlag, publicKey)
-
 	// Validate P2PKH
 	if _, ok := address.(*btcutil.AddressPubKeyHash); ok {
-		return internal.ValidateP2PKH(recoveryFlag, publicKeyHash, address, net)
+		return internal.ValidateP2PKH(publicKey, address, net)
 	}
 
 	// Validate P2SH
 	if _, ok := address.(*btcutil.AddressScriptHash); ok {
-		return internal.ValidateP2SH(recoveryFlag, publicKeyHash, address, net)
+		return internal.ValidateP2SH(publicKey, address, net)
 	}
 
 	// Validate P2WPKH
 	if _, ok := address.(*btcutil.AddressWitnessPubKeyHash); ok {
-		return internal.ValidateP2WPKH(recoveryFlag, publicKeyHash, address, net)
+		return internal.ValidateP2WPKH(publicKey, address, net)
 	}
 
 	// Validate P2TR
 	if _, ok := address.(*btcutil.AddressTaproot); ok {
-		return internal.ValidateP2TR(recoveryFlag, publicKey, address, net)
+		return internal.ValidateP2TR(publicKey, address, net)
 	}
 
 	// Catch all, should never happen
